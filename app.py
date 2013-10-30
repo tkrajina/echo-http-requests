@@ -39,6 +39,7 @@ class HttpRequest(mod_db.Model):
     url = mod_db.StringProperty()
     query_string = mod_db.StringProperty()
     http_version = mod_db.StringProperty()
+    remote_address = mod_db.StringProperty()
     created = mod_db.DateTimeProperty(auto_now_add=True)
 
 class PushRequestsHerePage(mod_webapp2.RequestHandler):
@@ -61,6 +62,7 @@ class PushRequestsHerePage(mod_webapp2.RequestHandler):
         http_request.url = str(self.request.url)
         http_request.query_string = str(self.request.query_string)
         http_request.http_version = str(self.request.http_version)
+        http_request.remote_address = self.request.remote_addr
 
         http_request.put()
 
@@ -106,6 +108,7 @@ class PullRequestsFromHerePage(mod_webapp2.RequestHandler):
                     'query_string': http_request.query_string,
                     'http_version': http_request.http_version,
                     'created': str(http_request.created),
+                    'remote_address': http_request.remote_address,
             }
 
             result['requests'].append(request)
