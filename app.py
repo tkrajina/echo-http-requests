@@ -30,6 +30,19 @@ def get_request_id(request):
         last_part = last_part.split('?')[0]
     return last_part
 
+def request_to_dictionary(http_request, request):
+    return {
+            'method': http_request.method,
+            'headers': get_headers(request),
+            'body': http_request.body,
+            'url': http_request.url,
+            'query_string': http_request.query_string,
+            'http_version': http_request.http_version,
+            'created': str(http_request.created),
+            'remote_address': http_request.remote_address,
+    }
+
+
 class HttpRequest(mod_db.Model):
     """Models an individual Guestbook entry with author, content, and date."""
     request_id = mod_db.StringProperty()
@@ -42,17 +55,19 @@ class HttpRequest(mod_db.Model):
     remote_address = mod_db.StringProperty()
     created = mod_db.DateTimeProperty(auto_now_add=True)
 
+def get_headers(request):
+    headers = {}
+    for key, value in request.headers.items():
+        if 'x-appengine' not in key.lower():
+            headers[str(key)] = str(value)
+    return headers
+
 class PushRequestsHerePage(mod_webapp2.RequestHandler):
 
     def _handle_request(self, http_method):
         remove_old()
 
-        headers = {}
-        for key, value in self.request.headers.items():
-            if 'x-appengine' not in key.lower():
-                headers[str(key)] = str(value)
-
-        result = { 'status': 'OK', }
+        headers = get_headers(self.request)
 
         http_request = HttpRequest()
         http_request.request_id = get_request_id(self.request)
@@ -65,6 +80,11 @@ class PushRequestsHerePage(mod_webapp2.RequestHandler):
         http_request.remote_address = self.request.remote_addr
 
         http_request.put()
+
+        result = {
+                'status': 'OK',
+                'request': request_to_dictionary(http_request, self.request)
+        }
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.write(to_json(result))
@@ -100,16 +120,7 @@ class PullRequestsFromHerePage(mod_webapp2.RequestHandler):
                 headers = mod_json.loads(http_request.headers)
             except:
                 headers = ''
-            request = {
-                    'method': http_request.method,
-                    'headers': headers,
-                    'body': http_request.body,
-                    'url': http_request.url,
-                    'query_string': http_request.query_string,
-                    'http_version': http_request.http_version,
-                    'created': str(http_request.created),
-                    'remote_address': http_request.remote_address,
-            }
+            request = request_to_dictionary(http_request, self.request)
 
             result['requests'].append(request)
 
