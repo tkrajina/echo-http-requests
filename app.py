@@ -42,7 +42,6 @@ def request_to_dictionary(http_request, request):
             'remote_address': http_request.remote_address,
     }
 
-
 class HttpRequest(mod_db.Model):
     """Models an individual Guestbook entry with author, content, and date."""
     request_id = mod_db.StringProperty()
@@ -63,14 +62,14 @@ def get_headers(request):
     return headers
 
 class PushRequestsHerePage(mod_webapp2.RequestHandler):
-
     def _handle_request(self, http_method):
-        remove_old()
+
+        request_id = get_request_id(self.request)
 
         headers = get_headers(self.request)
 
         http_request = HttpRequest()
-        http_request.request_id = get_request_id(self.request)
+        http_request.request_id = request_id
         http_request.method = http_method
         http_request.headers = mod_json.dumps(headers)
         http_request.body = str(self.request.body)
@@ -79,7 +78,9 @@ class PushRequestsHerePage(mod_webapp2.RequestHandler):
         http_request.http_version = str(self.request.http_version)
         http_request.remote_address = self.request.remote_addr
 
-        http_request.put()
+        if request_id:
+            remove_old()
+            http_request.put()
 
         result = {
                 'status': 'OK',
@@ -105,7 +106,6 @@ class PushRequestsHerePage(mod_webapp2.RequestHandler):
         self._handle_request('OPTIONS')
 
 class PullRequestsFromHerePage(mod_webapp2.RequestHandler):
-
     def get(self):
         remove_old()
 
@@ -136,6 +136,7 @@ class PullRequestsFromHerePage(mod_webapp2.RequestHandler):
 
 routes = [
         ('/push/.*', PushRequestsHerePage),
+        ('/echo', PushRequestsHerePage),
         ('/pull/.*', PullRequestsFromHerePage),
 ]
 
