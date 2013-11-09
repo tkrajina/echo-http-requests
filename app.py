@@ -25,10 +25,15 @@ def remove_old():
 
 def get_request_id(request):
     url = str(request.url)
-    last_part = url.split('/')[-1]
-    if '?' in last_part:
-        last_part = last_part.split('?')[0]
-    return last_part
+    if '?' in url:
+        url = url.split('?')[0]
+    if '//' in url:
+        url = url.split('//')[1]
+    parts = url.split('/')
+    try:
+        return parts[2]
+    except:
+        return None
 
 def request_to_dictionary(http_request, request):
     return {
