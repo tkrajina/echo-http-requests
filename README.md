@@ -1,6 +1,6 @@
 # Echo http requests
 
-This simple GoogleAppEngine app can be used to test http requests expected on a predefined url when you don't have a publicly available IP address. It is available on http://echo-http-requests.appspot.com .
+This GoogleAppEngine app can be used to test http requests expected on a predefined url when you don't have a publicly available IP address. It is available on http://echo-http-requests.appspot.com .
 
 Just use a url like:
 
@@ -12,7 +12,7 @@ Then retrieve requests received on that url with:
 
 Requests can be retrieved only once and requests older than 15 minutes will be removed.
 
-If you need just to retrieve informations about your own request (IP address, user agent, all headers) it can be retrieved with:
+If you need just informations about your own request (IP address, user agent, all headers) it can be retrieved with:
 
     http://echo-http-requests.appspot.com/echo
 
