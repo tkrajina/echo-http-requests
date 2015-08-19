@@ -12,7 +12,7 @@ Then retrieve requests received on that url with:
 
 Requests can be retrieved only once and requests older than 15 minutes will be removed.
 
-If you need just informations about your own request (IP address, user agent, all headers) it can be retrieved with:
+If you need just info about your own request (IP address, user agent, all headers) it can be retrieved with:
 
     http://echo-http-requests.appspot.com/echo
 
