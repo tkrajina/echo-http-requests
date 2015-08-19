@@ -3,6 +3,6 @@ prepare-index:
 	markdown README.md >> index.html
 	echo "</body>" >> index.html 
 start-server: prepare-index
-	~/bin/google_appengine/old_dev_appserver.py .
+	old_dev_appserver.py .
 deploy: prepare-index
-	~/bin/google_appengine/appcfg.py -v update .
+	appcfg.py -v update .
