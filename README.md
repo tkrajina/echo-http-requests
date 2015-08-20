@@ -14,6 +14,6 @@ Requests can be retrieved only once and requests older than 15 minutes will be r
 
 If you need just info about your own request (IP address, user agent, all headers) it can be retrieved with:
 
-    http://echo-http-requests.appspot.com/echo
-
-[Source](http://github.com/tkrajina/echo-http-requests).
+[http://echo-http-requests.appspot.com/echo](http://echo-http-requests.appspot.com/echo).
+    
+Get the source [here](http://github.com/tkrajina/echo-http-requests).
