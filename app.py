@@ -136,6 +136,8 @@ class PullRequestsFromHerePage(mod_webapp2.RequestHandler):
                 result['has_more'] = True
                 self.response.write(to_json(result))
 
+        result['requests'].sort(key=lambda x: x['created'])
+
         result['has_more'] = False
         self.response.write(to_json(result))
 
